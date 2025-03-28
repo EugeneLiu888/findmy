@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>輸入密碼</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        input { padding: 10px; margin: 10px; }
+        button { padding: 10px 20px; }
+        #error { color: red; display: none; }
+    </style>
+</head>
+<body>
+
+    <h2>請輸入密碼以進入</h2>
+    <input type="password" id="password" placeholder="輸入密碼">
+    <button onclick="checkPassword()">提交</button>
+    <p id="error">密碼錯誤，請再試一次！</p>
+    <p id="success" style="color: green; display: none;">✅ 密碼正確，正在前往小豹紋的路上...</p>
+
+    <script>
+        function checkPassword() {
+            var correctPassword = "7898"; 
+            var inputPassword = document.getElementById("password").value;
+            var errorText = document.getElementById("error");
+            var successText = document.getElementById("success");
+
+            if (inputPassword === correctPassword) {
+                successText.style.display = "block";
+                errorText.style.display = "none";
+                setTimeout(function() {
+                    window.location.href = "https://drive.google.com/drive/folders/1xzWdRy-SdXXKjW0Ezhp1zwEQnAoc0xHe?usp=drive_link";
+                }, 1000); 
+            } else {
+                successText.style.display = "none";
+                alert("❌ 密碼錯誤，請再試一次！");
+            }
+        }
+    </script>
+
+</body>
+</html>
