@@ -9,15 +9,24 @@
         input { padding: 10px; margin: 10px; }
         button { padding: 10px 20px; }
         #error { color: red; display: none; }
+        #countdown, #virus {
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
     <h2>請輸入密碼以進入</h2>
     <input type="password" id="password" placeholder="輸入密碼">
-    <button onclick="checkPassword()">提交</button>
+    <button onclick="checkPassword()">確認</button>
     <p id="error">密碼錯誤，請再試一次！</p>
     <p id="success" style="color: green; display: none;">✅ 密碼正確，正在前往小豹紋的路上...</p>
+    <p style="font-size: 10px; color:darkslategray;">如果你不知道怎麼解，請點擊以下有教學！</p>
+    <button onclick="startCountdown()">⚠️ 點擊此按鈕 ⚠️</button>
+    <p> </p>
 
     <script>
         function checkPassword() {
@@ -36,6 +45,29 @@
                 successText.style.display = "none";
                 alert("❌ 密碼錯誤，請再試一次！");
             }
+        }
+
+        function startCountdown() {
+            let countdown = 5;
+            let countdownElement = document.createElement("p");
+            countdownElement.id = "countdown";
+            document.body.appendChild(countdownElement);
+
+            function updateCountdown() {
+                countdownElement.innerText = "💣 即將爆炸倒數：" + countdown;
+                if (countdown > 0) {
+                    countdown--;
+                    setTimeout(updateCountdown, 500); // 每 0.5 秒更新一次，提高緊迫感
+                } else {
+                    showVirusScreen();
+                }
+            }
+
+            updateCountdown();
+        }
+
+        function showVirusScreen() {
+            document.body.innerHTML = "<h1 id='virus'>⚠️ 你的電腦已中毒！請立即拔掉電源 ⚠️</h1>";
         }
     </script>
 
