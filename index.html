@@ -5,69 +5,220 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>輸入密碼</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
-        input { padding: 10px; margin: 10px; }
-        button { padding: 10px 20px; }
-        #error { color: red; display: none; }
-        #countdown, #virus {
-            font-size: 24px;
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 100px; 
+        }
+        input { 
+            padding: 10px; 
+            margin: 10px; 
+            transition: all 0.3s ease-in-out; /* 平滑過渡 */
+        }
+        input:focus { 
+            transform: scale(1.05); /* 輸入框輕微放大 */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
             font-weight: bold;
-            color: red;
+            color: white;
+            background-color: #6D4C41; /* 溫暖的咖啡色 */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #5A3E34; /* 深咖色，提升互動感 */
+        }
+        button:active { 
+            transform: scale(0.95); /* 按下時縮小 */
+        }
+        #error, #success { 
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out; /* 淡入淡出 */
+        }
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ECE2D0; /* 柔和米灰色 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        #welcome-screen button {
+            font-size: 20px;
+            padding: 14px 28px;
+            margin-top: 20px;
+        }
+        #game-rules {
+            font-size: 18px;
+            font-family: "ZCOOL XiaoWei", serif;
+            color: #4A403A; /* 深咖色，溫暖且有文青感 */
+            margin-top: 20px;
+            text-align: center;
+        }
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        #timer {
+            font-size: 18px;
+            font-family: "Arial", sans-serif;
+            color: #E64A19; /* 紅色，強烈提醒時間緊迫 */
+            margin-top: 20px;
+        }
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes colorChange {
+            0% { color: red; }
+            25% { color: blue; }
+            50% { color: green; }
+            75% { color: orange; }
+            100% { color: red; }
+        }
+        .wave-text span {
+            display: inline-block;
+            animation: wave 2s infinite ease-in-out, colorChange 3s infinite;
+        }
+        .wave-text span:nth-child(1) { animation-delay: 0s; }
+        .wave-text span:nth-child(2) { animation-delay: 0.2s; }
+        .wave-text span:nth-child(3) { animation-delay: 0.4s; }
+        .wave-text span:nth-child(4) { animation-delay: 0.6s; }
+        .wave-text span:nth-child(5) { animation-delay: 0.8s; }
+        .wave-text span:nth-child(6) { animation-delay: 1s; }
+        .wave-text span:nth-child(7) { animation-delay: 1.2s; }
+        .wave-text span:nth-child(8) { animation-delay: 1.4s; }
+        #welcome-screen h1,
+        #welcome-screen h2 {
+            font-family: "ZCOOL XiaoWei", serif;
+            font-size: 36px;
+            font-weight: bold;
+            color: #4A403A; /* 深咖色，溫暖且有文青感 */
+        }
+        #joke-text {
             display: none;
+            color: darkred;
+            font-weight: bold;
+            font-family: Arial, sans-serif; /* 和原本的字體一致 */
+        }
+        #small-text {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 8px;
+            color: #4A403A;
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
 <body>
 
-    <h2>請輸入密碼以進入</h2>
-    <input type="password" id="password" placeholder="輸入密碼">
-    <button onclick="checkPassword()">確認</button>
-    <p id="error">密碼錯誤，請再試一次！</p>
-    <p id="success" style="color: green; display: none;">✅ 密碼正確，正在前往小豹紋的路上...</p>
-    <p style="font-size: 10px; color:darkslategray;">如果你不知道怎麼解，請點擊以下有教學！</p>
-    <button onclick="startCountdown()">⚠️ 點擊此按鈕 ⚠️</button>
-    <p> </p>
+    <div id="welcome-screen">
+        <h1>歡迎來到</h1>
+        <h2>愚人節特別遊戲</h2>
+        <p id="game-rules">🎮 遊戲規則 🎮<br>1. 密碼為數字<br>2. 密碼是一個歷史事件</p>
+        <button onclick="startGame()">➡️ 開始遊戲</button>
+    </div>
+
+    <div id="main-content">
+        <h2 class="wave-text">
+            <span>請</span><span>輸</span><span>入</span><span>密</span><span>碼</span><span>以</span><span>進</span><span>入</span>
+        </h2>
+        <p id="timer">剩餘時間：60秒</p>
+        <input type="password" id="password" placeholder="輸入密碼">
+        <button onclick="checkPassword()">確認</button>
+        <p id="error">密碼錯誤，請再試一次！</p>
+        <p id="success" style="color: green; display: none;">✅ 密碼正確，正在前往小豹紋的路上...</p>
+        <p id="error-count" style="font-size: 14px; color: darkred;">錯誤次數: 0</p>
+        <p style="font-size: 10px; color:darkslategray;">如果你不知道怎麼解，請點擊以下有教學！</p>
+        <button onclick="showJoke()">⚠️ 點擊此按鈕 ⚠️</button>
+        <p id="joke-text"></p>
+    </div>
+    
+    <p id="small-text">密碼為8個字</p>
 
     <script>
+        var timeLeft = 50; // 設定 60 秒倒數
+        var timerElement = document.getElementById("timer");
+        var incorrectAttempts = 0; // 記錄錯誤次數
+
+        function startTimer() {
+            var timerInterval = setInterval(function() {
+                timeLeft--;
+                timerElement.innerText = "剩餘時間：" + timeLeft + "秒";
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("main-content").style.display = "none"; // 隱藏輸入框和按鈕
+                    alert("⏰ 時間到！請再試一次！");
+                    window.location.href = "https://eugeneliu888.github.io/coming-soon-page/"; // 轉到新頁面
+                }
+            }, 1000);
+        }
+
+        function startGame() {
+            document.getElementById("welcome-screen").style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById("welcome-screen").style.display = "none";
+                document.getElementById("main-content").style.opacity = "1";
+                startTimer(); // 開始倒數計時
+            }, 1000);
+        }
+
         function checkPassword() {
-            var correctPassword = "7898"; 
+            var correctPassword = "19890604"; 
             var inputPassword = document.getElementById("password").value;
             var errorText = document.getElementById("error");
             var successText = document.getElementById("success");
+            var errorCountText = document.getElementById("error-count");
+
+            // 重設對話框內容
+            document.getElementById("password").value = "";
 
             if (inputPassword === correctPassword) {
-                successText.style.display = "block";
-                errorText.style.display = "none";
-                setTimeout(function() {
-                    window.location.href = "https://drive.google.com/drive/folders/1xzWdRy-SdXXKjW0Ezhp1zwEQnAoc0xHe?usp=drive_link";
-                }, 1000); 
+                successText.style.opacity = "0"; /* 隱藏成功訊息 */
+                errorText.style.opacity = "0"; /* 隱藏錯誤訊息 */
+
+                // 顯示系統錯誤訊息
+                alert("❗ 很抱歉，系統發生錯誤，請聯絡管理員");
+
+                // 跳轉到指定頁面
+                window.location.href = "https://eugeneliu888.github.io/coming-soon-page/";
             } else {
-                successText.style.display = "none";
-                alert("❌ 密碼錯誤，請再試一次！");
-            }
-        }
+                incorrectAttempts++; // 增加錯誤次數
+                successText.style.opacity = "0";
+                errorText.style.opacity = "1"; /* 顯示錯誤訊息 */
+                setTimeout(function() {
+                    errorText.style.opacity = "0"; /* 隱藏錯誤訊息 */
+                }, 3000);  // 短時間隱藏錯誤訊息
+                alert("❌ 密碼錯誤，請再試一次！目前錯誤次數: " + incorrectAttempts);
 
-        function startCountdown() {
-            let countdown = 5;
-            let countdownElement = document.createElement("p");
-            countdownElement.id = "countdown";
-            document.body.appendChild(countdownElement);
+                // 顯示錯誤次數
+                errorCountText.innerText = "錯誤次數: " + incorrectAttempts;
 
-            function updateCountdown() {
-                countdownElement.innerText = "💣 即將爆炸倒數：" + countdown;
-                if (countdown > 0) {
-                    countdown--;
-                    setTimeout(updateCountdown, 500); // 每 0.5 秒更新一次，提高緊迫感
-                } else {
-                    showVirusScreen();
+                // 若錯誤次數達到 3 次，顯示警告
+                if (incorrectAttempts >= 3) {
+                    alert("❗ 請注意，已輸入錯誤三次，請小心！");
                 }
             }
-
-            updateCountdown();
         }
 
-        function showVirusScreen() {
-            document.body.innerHTML = "<h1 id='virus'>⚠️ 你的電腦已中毒！請立即拔掉電源 ⚠️</h1>";
+        function showJoke() {
+            document.getElementById("joke-text").innerText = "你以為我人有那麼好嗎，笑死";
+            document.getElementById("joke-text").style.display = "block";
         }
     </script>
 
